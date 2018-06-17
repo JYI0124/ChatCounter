@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -13,7 +15,23 @@ import java.io.IOException;
  */
 public class ReadFiles {
 	
+	static File rFolder;
+	static String rFileName;
+	static File rFileEntry;
 	static String combineAddr; //String variable used for handling .csv files and .txt files separately
+	
+	
+	/**
+	 * This is a method that saves the data of folder, fileName, fileEntry variables
+	 * @param folder : address of opening folder
+	 * @param fileName : name of files in the folder
+	 * @param fileEntry : variable used for reading files
+	 */
+	public static void setValues(File folder, String fileName, File fileEntry){
+	      rFolder = folder;
+	      rFileName = fileName;
+	      rFileEntry = fileEntry;
+	 }
 	
 	/**
 	 *  This is a public method that opens all files that programmer wants to read in a folder.
@@ -22,7 +40,8 @@ public class ReadFiles {
 	 * @throws IOException : exceptional handling for when an error occurs while using IO system
 	 */
 	public static void listFilesForFolder(final File folder) throws IOException{
-		
+		  
+		ExecutorService executor = Executors.newFixedThreadPool(Integer.parseInt(Main.numOfThread));
 		
 		for(final File fileEntry : folder.listFiles()){ //for loop executes until the last file in the folder has been opened
 			
@@ -36,12 +55,21 @@ public class ReadFiles {
 						fileEntry.getName().contains(".txt")){ 
 					//if the filename extension is .txt or .csv
 					
-					ReadFilesInFolder(folder, fileEntry.getName(), fileEntry); //method call with sending the name of file and file path address
+					setValues(folder,fileEntry.getName(),fileEntry); //saving data
+				      
+					Runnable run = new DataHandleThread(); //Giving threads tasks
+			               
+					executor.execute(run); //running threads in thread pool
+
 				}
 			}
 		}
+		
+		while(!executor.isTerminated()){   
+	      }
+		
+		executor.shutdown(); //stop thread
 	}
-	
 	
 	/**
 	 * This is a public method that actually read a file by file.
@@ -50,23 +78,15 @@ public class ReadFiles {
 	 * @param fileEntry : get fileEntry
 	 * @throws IOException : exceptional handling for IO exceptions
 	 */
-	static public void ReadFilesInFolder(final File folder, final String fileName, final File fileEntry) throws IOException{	
+	static public void ReadFilesInFolder() throws IOException{	
 		
-		combineAddr = folder.toString() + "\\" + fileEntry.getName(); //string concatenation
-		// ex) combineAddr = "C:\\git\\ChatCounter\\JavaProgramming-L2"
-		
-		/*System.out.println();
-		System.out.println();
-		System.out.println(combineAddr); //check whether combineAddr has right directory
-		System.out.println();
-		System.out.println();*/
-		
+		combineAddr = rFolder.toString() + "\\" + rFileEntry.getName(); //string concatenation
 		
 		BufferedReader br = new BufferedReader(new FileReader(combineAddr)); //BufferedReader class instantiation to actually open file and read
 		
 		
 		//below if clause is used for exceptional handling that will be implemented more when actually I deal with the data inside files
-		if(fileEntry.getName().contains(".csv"))
+		if(rFileEntry.getName().contains(".csv"))
 		{
 			
 			String line = br.readLine(); //get rid of the first line of the file since .csv files have Date, User, Message Strings on the first line of files
@@ -95,7 +115,7 @@ public class ReadFiles {
 			}
 		}
 		//below if-else clause is used for exceptional handling that will be implemented more when actually I deal with the data inside files
-		else if(fileEntry.getName().contains(".txt"))
+		else if(rFileEntry.getName().contains(".txt"))
 		{
 			while(true)
 			{
@@ -113,3 +133,4 @@ public class ReadFiles {
 		}	
 	}
 }
+

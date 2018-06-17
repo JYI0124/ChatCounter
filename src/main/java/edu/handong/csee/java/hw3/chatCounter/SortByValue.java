@@ -1,5 +1,9 @@
 package edu.handong.csee.java.hw3.chatCounter;
 
+
+/**
+ * This is a class that sort the result of the program in descending order
+ */
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -56,18 +60,4 @@ public class SortByValue {
 
         return sortedMap;
     }
-
-	/**
-	 * This is a method that prints out the data inside Map.
-	 * @param map : data will be passed through the parameter in Map type.
-	 */
-   /* public static void printMap(Map<String, Integer> map)
-    {
-        for (Entry<String, Integer> entry : map.entrySet())
-        {
-            System.out.println("Kakao_id : " + entry.getKey() + ", count : "+ entry.getValue());
-        }
-    }
-*/
-
 }

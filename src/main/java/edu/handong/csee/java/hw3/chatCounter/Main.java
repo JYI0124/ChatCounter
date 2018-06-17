@@ -22,12 +22,12 @@ import org.apache.commons.cli.Options;
 
 public class Main {
 	
-	static File folder;// = new File("C:\\git\\ChatCounter"); //File class instantiation with directory address of files that needs to be read. Set as final since the directory won't be changed.
+	static File folder;
 	boolean verbose;
 	boolean help;
 	String inputPath;
 	String outputPath;
-	
+	static String numOfThread;
 	
 	/**
 	 * This is a main method that actually runs the program. 
@@ -40,7 +40,11 @@ public static void main(String[] args) throws IOException{
 		m.run(args);
 	}
 
-
+	/**
+	 * This is a method that actually runs cmd
+	 * @param args : pass the argument value
+	 * @throws IOException : handling Input/Output Exceptions
+	 */
 	private void run(String [] args) throws IOException{
 		Options options = createOptions();
 		
@@ -66,6 +70,12 @@ public static void main(String[] args) throws IOException{
 		}
 	}
 	
+	/**
+	 * This is a method that parse options
+	 * @param options : options; v,h,i,o,c
+	 * @param args : getting argument
+	 * @return : returning true when right option was chosen
+	 */
 	private boolean parseOptions(Options options, String [] args){
 		CommandLineParser parser = new DefaultParser();
 		
@@ -76,6 +86,7 @@ public static void main(String[] args) throws IOException{
 			help = cmd.hasOption("h");
 			inputPath = cmd.getOptionValue("i");
 			outputPath = cmd.getOptionValue("o");
+			numOfThread = cmd.getOptionValue("c");
 			
 		} catch (Exception e) {
 			printHelp(options);
@@ -85,7 +96,10 @@ public static void main(String[] args) throws IOException{
 		return true;
 	}
 	
-	
+	/**
+	 * This method is creating options
+	 * @return : returning the created option value
+	 */
 	private Options createOptions(){
 		Options options = new Options();
 		
@@ -107,9 +121,20 @@ public static void main(String[] args) throws IOException{
 				.required()
 				.build());
 		
+		options.addOption(Option.builder("c").longOpt("numOfThread")
+				.desc("Set a number of Threads to work with")
+				.hasArg()
+				.argName("Number of Threads")
+				.required()
+				.build());
+		
 		return options;
 	}
 	
+	/**
+	 * This is a method that pops up when user asks for help
+	 * @param options : getting option value
+	 */
 	private void printHelp(Options options){
 		HelpFormatter formatter = new HelpFormatter();
 		String header = "CLI test program";
@@ -119,3 +144,4 @@ public static void main(String[] args) throws IOException{
 
 
 }
+

@@ -9,7 +9,7 @@ import java.util.HashMap;
  * @author 21300750, Jin, Young-In
  *
  */
-public class DataHandling {
+public class DataHandling{
 	
 	static ArrayList <String> csvList = new ArrayList <String>(); //saves all String data from csv files
 	static ArrayList <String> txtList = new ArrayList <String>(); //saves all String data from txt files
@@ -28,7 +28,7 @@ public class DataHandling {
 	 * This method changes format of csv data so that it can be compared with txt data
 	 * @param line : line values will be sent from ReadFiles class
 	 */
-	static public void csvHandle(String line){
+	static synchronized public void csvHandle(String line){
 		
 		csvList.add(line);
 		
@@ -70,10 +70,10 @@ public class DataHandling {
 	}
 	
 	/**
-	 * This is a method that changes format of text file data so taht it can be compared with csv data
+	 * This is a method that changes format of text file data so that it can be compared with csv data
 	 * @param line : line values will be sent from ReadFile class
 	 */
-	static public void txtHandle(String line){
+	static synchronized public void txtHandle(String line){
 		
 		 // below actions in if clause are for changing text file date format to csv file date format for comparation that is done later
         if(line.contains("---------------"))
@@ -197,4 +197,5 @@ public class DataHandling {
         
         
 	}
+
 }
